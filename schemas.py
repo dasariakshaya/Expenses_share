@@ -34,7 +34,15 @@ class ExpenseCreate(BaseModel):
     paid_by: int = Field(..., gt=0, examples=[1])
     amount: float = Field(..., gt=0, examples=[1500.00])
     description: str = Field(..., min_length=1, examples=["Dinner at Joey's"])
-    splits: Optional[List[ExpenseSplitCreate]] = None
+    
+    # THE FIX: Explicitly define an example for the list itself to override the '0' default
+    splits: Optional[List[ExpenseSplitCreate]] = Field(
+        default=None,
+        examples=[[
+            {"user_id": 2, "amount": 750.00},
+            {"user_id": 3, "amount": 750.00}
+        ]]
+    )
 
 class ExpenseResponse(BaseModel):
     id: int = Field(..., gt=0, examples=[100])
