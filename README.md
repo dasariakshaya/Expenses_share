@@ -51,10 +51,13 @@ Navigate to:
 http://localhost:8000/docs
 ```
 
-### 4. Test Using the Frontend
+### 4 Using the Testing Dashboard
 
-Open the included `index.html` file in your browser while the backend server is running.
+This repository includes a lightweight `index.html` file that acts as a visual testing dashboard for the API, built with Vanilla JS and Bootstrap.
 
+**If testing locally (Desktop/Laptop):**
+1. Ensure your Docker containers are running.
+2. Simply double-click the `index.html` file in your file explorer to open it in any web browser.
 ---
 
 ## 📖 Core API Reference
