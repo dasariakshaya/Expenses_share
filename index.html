@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decentro — API Test Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" />
+  <style>
+    :root {
+      --bg:      #0d1117;
+      --surface: #161b22;
+      --border:  #30363d;
+      --muted:   #8b949e;
+      --accent:  #58a6ff;
+      --success: #3fb950;
+      --danger:  #f85149;
+      --warning: #d29922;
+      --delete:  #db61a2;
+      --text:    #c9d1d9;
+      --label:   #79c0ff;
+    }
+
+    /* ── global ──────────────────────────────────────────────── */
+    html, body { background: var(--bg); color: var(--text); font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 13px; }
+    h1  { font-size: 1.15rem; color: var(--accent); letter-spacing: .04em; }
+    h5  { font-size: .78rem; text-transform: uppercase; letter-spacing: .14em; color: var(--accent); margin: 0 0 .75rem; padding-bottom: .4rem; border-bottom: 1px solid var(--border); }
+    h6  { font-size: .7rem;  text-transform: uppercase; letter-spacing: .1em;  color: var(--muted); border-bottom: 1px solid var(--border); padding-bottom: .3rem; margin-bottom: .75rem; }
+
+    /* ── section wrappers ────────────────────────────────────── */
+    .section-block { padding: 1rem 1rem 0; }
+    .section-grid  { display: grid; gap: .85rem; padding-bottom: 1rem; }
+    .section-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+    .section-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+    .section-grid.cols-1 { grid-template-columns: 1fr; }
+    @media (max-width: 820px) {
+      .section-grid.cols-2,
+      .section-grid.cols-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ── cards ───────────────────────────────────────────────── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; }
+    .card-body { padding: .9rem; }
+
+    /* ── forms ───────────────────────────────────────────────── */
+    label { color: var(--label); font-size: .7rem; letter-spacing: .05em; margin-bottom: .18rem; display: block; }
+    .form-control, .form-control:focus {
+      background: var(--bg); border: 1px solid var(--border);
+      color: var(--text); border-radius: 4px; font-size: .78rem; box-shadow: none;
+    }
+    .form-control:focus { border-color: var(--accent); }
+    .form-control::placeholder { color: var(--muted); }
+    .form-group { margin-bottom: .55rem; }
+    .form-check-input  { accent-color: var(--accent); }
+    .form-check-label  { color: var(--text); font-size: .78rem; }
+
+    /* ── buttons ─────────────────────────────────────────────── */
+    .btn { font-size: .73rem; font-family: inherit; border-radius: 4px; padding: .28rem .72rem; }
+    .btn-primary   { background: var(--accent);  border-color: var(--accent);  color: #000; }
+    .btn-success   { background: var(--success); border-color: var(--success); color: #000; }
+    .btn-secondary { background: transparent;    border-color: var(--border);  color: var(--muted); }
+    .btn-danger    { background: transparent;    border-color: var(--danger);  color: var(--danger); }
+    .btn-delete    { background: transparent;    border-color: var(--delete);  color: var(--delete); font-size: .73rem; font-family: inherit; border-radius: 4px; padding: .28rem .72rem; border: 1px solid; }
+    .btn-primary:hover   { background: #79c0ff; border-color: #79c0ff; color: #000; }
+    .btn-success:hover   { background: #56d364; border-color: #56d364; color: #000; }
+    .btn-secondary:hover { border-color: var(--muted); color: var(--text); }
+    .btn-danger:hover    { background: var(--danger); color: #fff; }
+    .btn-delete:hover    { background: var(--delete); color: #fff; }
+    .btn-sm { padding: .18rem .45rem; font-size: .68rem; }
+
+    /* ── method badges ───────────────────────────────────────── */
+    .method {
+      display: inline-block; font-size: .62rem; font-weight: 700;
+      letter-spacing: .06em; padding: .08rem .38rem; border-radius: 3px;
+      margin-right: .35rem; vertical-align: middle;
+    }
+    .method-post   { background: #1a3a2a; color: var(--success); border: 1px solid #2d5a3d; }
+    .method-get    { background: #1a2a3a; color: var(--accent);  border: 1px solid #2d4a6a; }
+    .method-delete { background: #2a1a2a; color: var(--delete);  border: 1px solid #5a2d5a; }
+    .endpoint-path { color: var(--muted); font-size: .76rem; vertical-align: middle; }
+
+    /* ── section divider ─────────────────────────────────────── */
+    .section-divider { border: none; border-top: 1px solid var(--border); margin: .5rem 0 0; }
+
+    /* ── custom split rows ───────────────────────────────────── */
+    #split-rows .split-row { display: flex; gap: .45rem; margin-bottom: .38rem; align-items: center; }
+    #split-rows .split-row .form-control { flex: 1; }
+    #split-rows .split-row .btn { flex-shrink: 0; }
+    #custom-split-section {
+      display: none; border: 1px dashed var(--border);
+      border-radius: 4px; padding: .7rem; margin-top: .45rem;
+    }
+    #custom-split-section.visible { display: block; }
+
+    /* ── page header ─────────────────────────────────────────── */
+    .page-header {
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: .6rem 1rem; display: flex; align-items: center; justify-content: space-between;
+    }
+    .page-header .build-info { font-size: .67rem; color: var(--muted); }
+    .page-header .dot {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background: var(--success); margin-right: .4rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+    /* ── console ─────────────────────────────────────────────── */
+    #console-wrap {
+      position: sticky; bottom: 0; background: var(--bg);
+      border-top: 2px solid var(--border); padding: .45rem 1rem .7rem; z-index: 100;
+    }
+    .console-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
+    .console-label  { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+    .console-meta   { font-size: .68rem; color: var(--muted); }
+    .status-ok   { color: var(--success); font-weight: 700; }
+    .status-err  { color: var(--danger);  font-weight: 700; }
+    .status-warn { color: var(--warning); font-weight: 700; }
+
+    #console {
+      background: #010409; border: 1px solid var(--border); border-radius: 4px;
+      padding: .6rem .8rem; font-size: .73rem;
+      min-height: 88px; max-height: 240px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-all;
+      color: var(--text); line-height: 1.6;
+    }
+    #console .log-entry { border-bottom: 1px solid #1c2128; padding-bottom: .42rem; margin-bottom: .42rem; }
+    #console .log-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    #console .log-ts   { color: var(--muted); }
+    #console .log-req  { color: var(--warning); }
+    #console .log-ok   { color: var(--success); }
+    #console .log-err  { color: var(--danger); }
+    #console .log-body { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════ HEADER ═══════════════════════════════ -->
+<div class="page-header">
+  <div>
+    <span class="dot"></span>
+    <h1 class="d-inline mb-0">Decentro</h1>
+    <span class="ml-2" style="color:var(--muted);font-size:.75rem;">/ Expense Sharing API · Test Dashboard</span>
+  </div>
+  <div class="build-info">
+    BASE URL: <span style="color:var(--accent);">http://127.0.0.1:8000</span>
+    &nbsp;·&nbsp; 9 endpoints
+  </div>
+</div>
+
+<!-- ══════════════════════════════ USERS ════════════════════════════════ -->
+<div class="section-block">
+  <h5>👤 Users</h5>
+  <div class="section-grid cols-2">
+
+    <!-- 1. Create User -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-post">POST</span><span class="endpoint-path">/users</span></h6>
+        <div class="form-group">
+          <label for="u-name">name</label>
+          <input id="u-name" class="form-control" type="text" placeholder="e.g. Alice" />
+        </div>
+        <button class="btn btn-primary" onclick="createUser()">Create User</button>
+      </div>
+    </div>
+
+    <!-- 2. Get All Users -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-get">GET</span><span class="endpoint-path">/users</span></h6>
+        <p style="color:var(--muted);font-size:.75rem;margin-bottom:.75rem;">Returns the full list of all registered users in the system.</p>
+        <button class="btn btn-success" onclick="getUsers()">Get All Users</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ══════════════════════════ GROUPS & MEMBERS ══════════════════════════ -->
+<div class="section-block">
+  <h5>👥 Groups &amp; Members</h5>
+  <div class="section-grid cols-3">
+
+    <!-- 3. Create Group -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-post">POST</span><span class="endpoint-path">/groups</span></h6>
+        <div class="form-group">
+          <label for="g-name">name</label>
+          <input id="g-name" class="form-control" type="text" placeholder="e.g. Goa Trip" />
+        </div>
+        <button class="btn btn-primary" onclick="createGroup()">Create Group</button>
+      </div>
+    </div>
+
+    <!-- 4. Add Member -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-post">POST</span><span class="endpoint-path">/groups/{group_id}/members</span></h6>
+        <div class="form-row">
+          <div class="col form-group">
+            <label for="am-group-id">group_id</label>
+            <input id="am-group-id" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col form-group">
+            <label for="am-user-id">user_id</label>
+            <input id="am-user-id" class="form-control" type="number" min="1" placeholder="2" />
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="addMember()">Add Member</button>
+      </div>
+    </div>
+
+    <!-- 5. Get Members -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-get">GET</span><span class="endpoint-path">/groups/{group_id}/members</span></h6>
+        <div class="form-group">
+          <label for="gm-group-id">group_id</label>
+          <input id="gm-group-id" class="form-control" type="number" min="1" placeholder="1" />
+        </div>
+        <button class="btn btn-success" onclick="getMembers()">Get Members</button>
+      </div>
+    </div>
+
+    <!-- 6. Remove Member (spans full width in the 3-col grid) -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <div class="card-body">
+        <h6><span class="method method-delete">DELETE</span><span class="endpoint-path">/groups/{group_id}/members/{user_id}</span></h6>
+        <div class="form-row">
+          <div class="col-md-3 form-group">
+            <label for="rm-group-id">group_id</label>
+            <input id="rm-group-id" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col-md-3 form-group">
+            <label for="rm-user-id">user_id</label>
+            <input id="rm-user-id" class="form-control" type="number" min="1" placeholder="2" />
+          </div>
+          <div class="col-md-6 d-flex align-items-end form-group">
+            <div>
+              <p style="color:var(--muted);font-size:.72rem;margin-bottom:.45rem;">Removes user from group. Historical expenses &amp; balances remain intact.</p>
+              <button class="btn btn-delete" onclick="removeMember()">Remove Member</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ══════════════════════════════ EXPENSES ══════════════════════════════ -->
+<div class="section-block">
+  <h5>💸 Expenses</h5>
+  <div class="section-grid cols-1">
+
+    <!-- 7. Add Expense -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-post">POST</span><span class="endpoint-path">/expenses</span></h6>
+        <div class="form-row">
+          <div class="col-md-3 form-group">
+            <label for="e-group-id">group_id</label>
+            <input id="e-group-id" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col-md-3 form-group">
+            <label for="e-paid-by">paid_by (user_id)</label>
+            <input id="e-paid-by" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col-md-3 form-group">
+            <label for="e-amount">amount (₹ float)</label>
+            <input id="e-amount" class="form-control" type="number" step="0.01" min="0.01" placeholder="600.00" />
+          </div>
+          <div class="col-md-3 form-group">
+            <label for="e-desc">description</label>
+            <input id="e-desc" class="form-control" type="text" placeholder="Hotel bill" />
+          </div>
+        </div>
+
+        <!-- Custom Split Toggle -->
+        <div class="form-check mb-1">
+          <input class="form-check-input" type="checkbox" id="use-custom-split" onchange="toggleCustomSplit()" />
+          <label class="form-check-label" for="use-custom-split" style="display:inline;">
+            Use Custom Split
+            <span style="color:var(--muted);font-size:.68rem;margin-left:.4rem;">(builds <code style="font-size:.68rem;color:var(--warning);">splits[]</code> array in payload)</span>
+          </label>
+        </div>
+
+        <!-- Custom Split Section -->
+        <div id="custom-split-section">
+          <div style="font-size:.68rem;color:var(--muted);margin-bottom:.45rem;">
+            Each row → <code style="font-size:.68rem;color:var(--warning);">{ "user_id": …, "amount": … }</code>
+            &nbsp;·&nbsp; Amounts must sum to the total above or the backend will reject with 400.
+          </div>
+          <div id="split-rows"></div>
+          <button class="btn btn-secondary btn-sm mt-1" onclick="addSplitRow()">+ Add Row</button>
+        </div>
+
+        <div class="mt-3">
+          <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+          <span style="cursor:pointer;color:var(--muted);font-size:.7rem;margin-left:1rem;"
+                onclick="previewPayload()">[ preview payload ]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Get Group Expenses -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-get">GET</span><span class="endpoint-path">/groups/{group_id}/expenses</span></h6>
+        <div class="form-row align-items-end">
+          <div class="col-md-3 form-group mb-0">
+            <label for="ge-group-id">group_id</label>
+            <input id="ge-group-id" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col-md-9 form-group mb-0">
+            <button class="btn btn-success" onclick="getGroupExpenses()">Get Group Expenses</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ══════════════════════════════ BALANCES ══════════════════════════════ -->
+<div class="section-block" style="padding-bottom:1rem;">
+  <h5>⚖️ Balances</h5>
+  <div class="section-grid cols-1">
+
+    <!-- 9. Get Balances -->
+    <div class="card">
+      <div class="card-body">
+        <h6><span class="method method-get">GET</span><span class="endpoint-path">/groups/{group_id}/balances</span></h6>
+        <div class="form-row align-items-end">
+          <div class="col-md-3 form-group mb-0">
+            <label for="b-group-id">group_id</label>
+            <input id="b-group-id" class="form-control" type="number" min="1" placeholder="1" />
+          </div>
+          <div class="col-md-9 form-group mb-0">
+            <button class="btn btn-success" onclick="getBalances()">Get Balances</button>
+            <span style="color:var(--muted);font-size:.7rem;margin-left:.8rem;">Returns consolidated net debt graph with mutual-debt simplification.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════ CONSOLE ═══════════════════════════════ -->
+<div id="console-wrap">
+  <div class="console-header">
+    <span class="console-label">▶ response console</span>
+    <div>
+      <span id="console-status" class="console-meta mr-3"></span>
+      <button class="btn btn-secondary btn-sm" onclick="clearConsole()">clear</button>
+    </div>
+  </div>
+  <pre id="console">// Responses will appear here.
+// Tip: open DevTools → Network tab to inspect raw HTTP traffic.</pre>
+</div>
+
+<!-- ══════════════════════════════ SCRIPT ════════════════════════════════ -->
+<script>
+  const BASE = 'http://127.0.0.1:8000';
+
+  /* ── Console helpers ──────────────────────────────────────────────── */
+  const consoleEl = document.getElementById('console');
+  const statusEl  = document.getElementById('console-status');
+
+  function clearConsole() {
+    consoleEl.textContent = '// Console cleared.';
+    statusEl.textContent  = '';
+    statusEl.className    = 'console-meta mr-3';
+  }
+
+  function logToConsole(method, url, statusCode, body) {
+    const ts   = new Date().toLocaleTimeString('en-GB', { hour12: false });
+    const isOk = statusCode >= 200 && statusCode < 300;
+    const cls  = isOk ? 'log-ok' : 'log-err';
+    const lbl  = isOk ? 'OK' : 'ERR';
+
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML =
+      `<span class="log-ts">[${ts}]</span> ` +
+      `<span class="log-req">${method} ${url}</span> → ` +
+      `<span class="${cls}">${statusCode} ${lbl}</span>\n` +
+      `<span class="log-body">${escHtml(JSON.stringify(body, null, 2))}</span>`;
+
+    if (consoleEl.textContent.startsWith('//')) consoleEl.textContent = '';
+    consoleEl.insertBefore(entry, consoleEl.firstChild);
+
+    statusEl.textContent = `${statusCode} ${lbl}`;
+    statusEl.className   = `console-meta mr-3 ${isOk ? 'status-ok' : 'status-err'}`;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ── Fetch wrapper ────────────────────────────────────────────────── */
+  async function apiCall(method, path, body) {
+    const url  = BASE + path;
+    const opts = { method, headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    try {
+      const res = await fetch(url, opts);
+      const ct  = res.headers.get('content-type') || '';
+      const data = ct.includes('application/json') ? await res.json() : { _raw: await res.text() };
+      logToConsole(method, url, res.status, data);
+    } catch (err) {
+      logToConsole(method, url, 0, {
+        error:  'Network error / server unreachable',
+        detail: err.message,
+        hint:   `Is the FastAPI server running at ${BASE} ?`
+      });
+    }
+  }
+
+  /* ── 1. Create User ───────────────────────────────────────────────── */
+  function createUser() {
+    const name = document.getElementById('u-name').value.trim();
+    if (!name) return alert('name is required');
+    apiCall('POST', '/users', { name });
+  }
+
+  /* ── 2. Get All Users ─────────────────────────────────────────────── */
+  function getUsers() {
+    apiCall('GET', '/users');
+  }
+
+  /* ── 3. Create Group ──────────────────────────────────────────────── */
+  function createGroup() {
+    const name = document.getElementById('g-name').value.trim();
+    if (!name) return alert('name is required');
+    apiCall('POST', '/groups', { name });
+  }
+
+  /* ── 4. Add Member ────────────────────────────────────────────────── */
+  function addMember() {
+    const group_id = parseInt(document.getElementById('am-group-id').value);
+    const user_id  = parseInt(document.getElementById('am-user-id').value);
+    if (!group_id || !user_id) return alert('group_id and user_id are required');
+    apiCall('POST', `/groups/${group_id}/members`, { user_id });
+  }
+
+  /* ── 5. Get Members ───────────────────────────────────────────────── */
+  function getMembers() {
+    const group_id = parseInt(document.getElementById('gm-group-id').value);
+    if (!group_id) return alert('group_id is required');
+    apiCall('GET', `/groups/${group_id}/members`);
+  }
+
+  /* ── 6. Remove Member ─────────────────────────────────────────────── */
+  function removeMember() {
+    const group_id = parseInt(document.getElementById('rm-group-id').value);
+    const user_id  = parseInt(document.getElementById('rm-user-id').value);
+    if (!group_id || !user_id) return alert('group_id and user_id are required');
+    apiCall('DELETE', `/groups/${group_id}/members/${user_id}`);
+  }
+
+  /* ── 7. Add Expense ───────────────────────────────────────────────── */
+  function addExpense() {
+    const group_id    = parseInt(document.getElementById('e-group-id').value);
+    const paid_by     = parseInt(document.getElementById('e-paid-by').value);
+    const amount      = parseFloat(document.getElementById('e-amount').value);
+    const description = document.getElementById('e-desc').value.trim();
+    const useCustom   = document.getElementById('use-custom-split').checked;
+
+    if (!group_id || !paid_by || isNaN(amount) || amount <= 0 || !description)
+      return alert('All expense fields are required');
+
+    const payload = { group_id, paid_by, amount, description };
+    if (useCustom) {
+      const splits = buildSplitsArray();
+      if (splits === null) return;
+      payload.splits = splits;
+    }
+    apiCall('POST', '/expenses', payload);
+  }
+
+  /* ── 8. Get Group Expenses ────────────────────────────────────────── */
+  function getGroupExpenses() {
+    const group_id = parseInt(document.getElementById('ge-group-id').value);
+    if (!group_id) return alert('group_id is required');
+    apiCall('GET', `/groups/${group_id}/expenses`);
+  }
+
+  /* ── 9. Get Balances ──────────────────────────────────────────────── */
+  function getBalances() {
+    const group_id = parseInt(document.getElementById('b-group-id').value);
+    if (!group_id) return alert('group_id is required');
+    apiCall('GET', `/groups/${group_id}/balances`);
+  }
+
+  /* ── Custom Split Helpers ─────────────────────────────────────────── */
+  function toggleCustomSplit() {
+    const section = document.getElementById('custom-split-section');
+    const checked = document.getElementById('use-custom-split').checked;
+    section.classList.toggle('visible', checked);
+    if (checked && document.getElementById('split-rows').children.length === 0) addSplitRow();
+  }
+
+  let splitRowIdx = 0;
+  function addSplitRow() {
+    const idx = splitRowIdx++;
+    const div = document.createElement('div');
+    div.className = 'split-row';
+    div.id = `split-row-${idx}`;
+    div.innerHTML = `
+      <input class="form-control" type="number" min="1" placeholder="user_id" data-split="user_id" />
+      <input class="form-control" type="number" step="0.01" min="0.01" placeholder="amount (₹)" data-split="amount" />
+      <button class="btn btn-danger btn-sm" onclick="removeSplitRow('split-row-${idx}')">✕</button>`;
+    document.getElementById('split-rows').appendChild(div);
+  }
+
+  function removeSplitRow(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  function buildSplitsArray() {
+    const rows = document.querySelectorAll('#split-rows .split-row');
+    if (rows.length === 0) { alert('Add at least one split row, or uncheck "Use Custom Split".'); return null; }
+    const splits = [];
+    for (const row of rows) {
+      const uidEl   = row.querySelector('[data-split="user_id"]');
+      const amtEl   = row.querySelector('[data-split="amount"]');
+      const user_id = parseInt(uidEl.value);
+      const amount  = parseFloat(amtEl.value);
+      if (!user_id || isNaN(amount) || amount <= 0) {
+        alert('Each split row must have a valid user_id and amount > 0.');
+        uidEl.focus(); return null;
+      }
+      splits.push({ user_id, amount });
+    }
+    return splits;
+  }
+
+  /* ── Payload Preview ──────────────────────────────────────────────── */
+  function previewPayload() {
+    const payload = {
+      group_id:    parseInt(document.getElementById('e-group-id').value) || null,
+      paid_by:     parseInt(document.getElementById('e-paid-by').value)  || null,
+      amount:      parseFloat(document.getElementById('e-amount').value) || null,
+      description: document.getElementById('e-desc').value.trim()        || null,
+    };
+    if (document.getElementById('use-custom-split').checked) {
+      const splits = buildSplitsArray();
+      if (splits) payload.splits = splits;
+    }
+    logToConsole('PREVIEW', BASE + '/expenses', 0, payload);
+    const firstEntry = consoleEl.querySelector('.log-entry');
+    if (firstEntry) {
+      const span = firstEntry.querySelector('.log-err, .log-ok');
+      if (span) { span.textContent = 'PREVIEW'; span.style.color = 'var(--warning)'; }
+    }
+    statusEl.textContent = 'PREVIEW';
+    statusEl.className   = 'console-meta mr-3 status-warn';
+  }
+</script>
+</body>
+</html>

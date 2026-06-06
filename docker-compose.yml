@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      # This forces your app to use PostgreSQL instead of SQLite when running in Docker
+      - DATABASE_URL=postgresql://decentro_user:password123@db:5432/decentro_db
+  
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: decentro_user
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: decentro_db
+    ports:
+      - "5432:5432"
+    volumes:
+      # This ensures your database data isn't deleted when you shut down Docker
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
