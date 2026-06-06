@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "97e386e2-9c44-4ef0-bdcc-385400325a63",
+    "_postman_id": "d7d0fb86-08d0-4fea-b189-5f73178d2d75",
     "name": "Expense Sharing API",
     "description": "Backend service to track shared expenses and calculate balances.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "55535262",
-    "_collection_link": "https://go.postman.co/collection/55535262-97e386e2-9c44-4ef0-bdcc-385400325a63?source=collection_link"
+    "_collection_link": "https://go.postman.co/collection/55535262-d7d0fb86-08d0-4fea-b189-5f73178d2d75?source=collection_link"
   },
   "item": [
     {
@@ -63,7 +63,7 @@
                 }
               ],
               "cookie": [],
-              "body": "[\n  {\n    \"id\": 891,\n    \"name\": \"string\",\n    \"created_at\": \"2011-01-24T23:00:04.460Z\"\n  },\n  {\n    \"id\": 957,\n    \"name\": \"string\",\n    \"created_at\": \"1996-03-07T01:56:02.258Z\"\n  }\n]"
+              "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"created_at\": \"1967-11-26T23:42:58.444Z\"\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"created_at\": \"1954-07-09T12:46:56.453Z\"\n  }\n]"
             }
           ]
         },
@@ -147,7 +147,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": 5268,\n  \"name\": \"string\",\n  \"created_at\": \"1980-04-10T05:23:44.449Z\"\n}"
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": \"1986-10-03T01:02:21.748Z\"\n}"
             },
             {
               "name": "Validation Error",
@@ -193,7 +193,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
             }
           ]
         }
@@ -235,11 +235,11 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             },
                             {
                               "key": "user_id",
-                              "value": "6444"
+                              "value": "string"
                             }
                           ]
                         }
@@ -269,11 +269,11 @@
                               "variable": [
                                 {
                                   "key": "group_id",
-                                  "value": "5158"
+                                  "value": "string"
                                 },
                                 {
                                   "key": "user_id",
-                                  "value": "6444"
+                                  "value": "string"
                                 }
                               ]
                             }
@@ -314,11 +314,11 @@
                               "variable": [
                                 {
                                   "key": "group_id",
-                                  "value": "5158"
+                                  "value": "string"
                                 },
                                 {
                                   "key": "user_id",
-                                  "value": "6444"
+                                  "value": "string"
                                 }
                               ]
                             }
@@ -333,7 +333,7 @@
                             }
                           ],
                           "cookie": [],
-                          "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+                          "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
                         }
                       ]
                     }
@@ -355,7 +355,7 @@
                     ],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"user_id\": 3878\n}",
+                      "raw": "{\n  \"user_id\": \"string\"\n}",
                       "options": {
                         "raw": {
                           "headerFamily": "json",
@@ -376,7 +376,7 @@
                       "variable": [
                         {
                           "key": "group_id",
-                          "value": "5158"
+                          "value": "string"
                         }
                       ]
                     },
@@ -399,7 +399,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\n  \"user_id\": 3878\n}",
+                          "raw": "{\n  \"user_id\": \"string\"\n}",
                           "options": {
                             "raw": {
                               "headerFamily": "json",
@@ -420,7 +420,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -453,7 +453,7 @@
                         ],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\n  \"user_id\": 3878\n}",
+                          "raw": "{\n  \"user_id\": \"string\"\n}",
                           "options": {
                             "raw": {
                               "headerFamily": "json",
@@ -474,7 +474,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -489,7 +489,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
                     }
                   ]
                 },
@@ -516,7 +516,7 @@
                       "variable": [
                         {
                           "key": "group_id",
-                          "value": "5158"
+                          "value": "string"
                         }
                       ]
                     },
@@ -546,7 +546,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -561,7 +561,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "[\n  {\n    \"id\": 7327,\n    \"name\": \"string\",\n    \"created_at\": \"1970-11-15T16:34:26.974Z\"\n  },\n  {\n    \"id\": 745,\n    \"name\": \"string\",\n    \"created_at\": \"1983-03-09T16:30:11.670Z\"\n  }\n]"
+                      "body": "[\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"created_at\": \"1976-03-23T09:08:13.899Z\"\n  },\n  {\n    \"id\": \"string\",\n    \"name\": \"string\",\n    \"created_at\": \"2018-08-16T14:16:58.121Z\"\n  }\n]"
                     },
                     {
                       "name": "Validation Error",
@@ -586,7 +586,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -601,7 +601,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
                     }
                   ]
                 }
@@ -633,7 +633,7 @@
                       "variable": [
                         {
                           "key": "group_id",
-                          "value": "5158"
+                          "value": "string"
                         }
                       ]
                     },
@@ -663,7 +663,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -678,7 +678,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "[\n  {\n    \"id\": 7688,\n    \"group_id\": 1990,\n    \"paid_by\": 3942,\n    \"amount\": 700.3044944402492,\n    \"description\": \"string\",\n    \"created_at\": \"1959-10-10T20:49:32.382Z\"\n  },\n  {\n    \"id\": 6167,\n    \"group_id\": 6222,\n    \"paid_by\": 4951,\n    \"amount\": 3977.5373875148357,\n    \"description\": \"string\",\n    \"created_at\": \"2026-05-02T11:23:24.131Z\"\n  }\n]"
+                      "body": "[\n  {\n    \"id\": \"string\",\n    \"group_id\": \"string\",\n    \"paid_by\": \"string\",\n    \"amount\": 6929.453965518519,\n    \"description\": \"string\",\n    \"created_at\": \"1995-06-01T03:05:44.550Z\"\n  },\n  {\n    \"id\": \"string\",\n    \"group_id\": \"string\",\n    \"paid_by\": \"string\",\n    \"amount\": 3934.3776218884695,\n    \"description\": \"string\",\n    \"created_at\": \"2004-08-14T04:46:23.499Z\"\n  }\n]"
                     },
                     {
                       "name": "Validation Error",
@@ -703,7 +703,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -718,7 +718,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
                     }
                   ]
                 }
@@ -750,7 +750,7 @@
                       "variable": [
                         {
                           "key": "group_id",
-                          "value": "5158"
+                          "value": "string"
                         }
                       ]
                     },
@@ -780,7 +780,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -820,7 +820,7 @@
                           "variable": [
                             {
                               "key": "group_id",
-                              "value": "5158"
+                              "value": "string"
                             }
                           ]
                         }
@@ -835,7 +835,7 @@
                         }
                       ],
                       "cookie": [],
-                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+                      "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
                     }
                   ]
                 }
@@ -923,7 +923,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": 462,\n  \"name\": \"string\",\n  \"created_at\": \"2008-06-14T10:34:41.928Z\"\n}"
+              "body": "{\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": \"1953-11-02T08:36:56.220Z\"\n}"
             },
             {
               "name": "Validation Error",
@@ -969,7 +969,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
             }
           ]
         }
@@ -994,7 +994,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"group_id\": 5071,\n  \"paid_by\": 481,\n  \"amount\": 3028.2900624073754,\n  \"description\": \"string\",\n  \"splits\": null\n}",
+              "raw": "{\n  \"group_id\": \"string\",\n  \"paid_by\": \"string\",\n  \"amount\": 4406,\n  \"description\": \"string\",\n  \"splits\": [\n    {\n      \"user_id\": \"string\",\n      \"amount\": 781.1165727641953\n    },\n    {\n      \"user_id\": \"string\",\n      \"amount\": 3459.8356864892808\n    }\n  ]\n}",
               "options": {
                 "raw": {
                   "headerFamily": "json",
@@ -1030,7 +1030,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"group_id\": 5071,\n  \"paid_by\": 481,\n  \"amount\": 3028.2900624073754,\n  \"description\": \"string\",\n  \"splits\": null\n}",
+                  "raw": "{\n  \"group_id\": \"string\",\n  \"paid_by\": \"string\",\n  \"amount\": 4406,\n  \"description\": \"string\",\n  \"splits\": [\n    {\n      \"user_id\": \"string\",\n      \"amount\": 781.1165727641953\n    },\n    {\n      \"user_id\": \"string\",\n      \"amount\": 3459.8356864892808\n    }\n  ]\n}",
                   "options": {
                     "raw": {
                       "headerFamily": "json",
@@ -1058,7 +1058,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"id\": 3708,\n  \"group_id\": 6297,\n  \"paid_by\": 4721,\n  \"amount\": 9376.903101046672,\n  \"description\": \"string\",\n  \"created_at\": \"1982-04-21T12:10:52.635Z\"\n}"
+              "body": "{\n  \"id\": \"string\",\n  \"group_id\": \"string\",\n  \"paid_by\": \"string\",\n  \"amount\": 5812.654031510009,\n  \"description\": \"string\",\n  \"created_at\": \"2023-04-30T17:36:11.388Z\"\n}"
             },
             {
               "name": "Validation Error",
@@ -1076,7 +1076,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"group_id\": 5071,\n  \"paid_by\": 481,\n  \"amount\": 3028.2900624073754,\n  \"description\": \"string\",\n  \"splits\": null\n}",
+                  "raw": "{\n  \"group_id\": \"string\",\n  \"paid_by\": \"string\",\n  \"amount\": 4406,\n  \"description\": \"string\",\n  \"splits\": [\n    {\n      \"user_id\": \"string\",\n      \"amount\": 781.1165727641953\n    },\n    {\n      \"user_id\": \"string\",\n      \"amount\": 3459.8356864892808\n    }\n  ]\n}",
                   "options": {
                     "raw": {
                       "headerFamily": "json",
@@ -1104,7 +1104,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        8002,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        6693,\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
+              "body": "{\n  \"detail\": [\n    {\n      \"loc\": [\n        \"string\",\n        \"string\"\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"loc\": [\n        7992,\n        5685\n      ],\n      \"msg\": \"string\",\n      \"type\": \"string\"\n    }\n  ]\n}"
             }
           ]
         }
