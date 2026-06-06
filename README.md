@@ -33,7 +33,7 @@ This application goes beyond basic CRUD operations by implementing several enter
 ### 1. Clone the Repository
 
 ```bash
-git clone <https://github.com/dasariakshaya/Expenses_share.git>
+git clone https://github.com/dasariakshaya/Expenses_share.git
 cd Expenses_share
 ```
 
