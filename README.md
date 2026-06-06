@@ -181,3 +181,12 @@ Expenses_share/
 ├── docker-compose.yml   # Orchestration for the API and PostgreSQL containers
 └── requirements.txt     # Python package dependencies
 ```
+## 🗄️ Database Schema Explanation
+
+The PostgreSQL database is normalized into 5 core tables to ensure strict data integrity and support complex ledger querying:
+
+1. **`users`**: Stores core user identity. Enforces unique constraints to prevent duplicate accounts.
+2. **`groups`**: Stores group metadata.
+3. **`group_members`**: A relational mapping table linking users to groups. **Crucial Feature:** It utilizes `is_active` and `left_at` columns to support "soft deletes." This preserves the immutable history of past expenses even if a user leaves a group.
+4. **`expenses`**: The master record for a transaction. It tracks the `group_id`, the `paid_by` user, and the total transaction amount (stored securely as integer paise to prevent floating-point math errors).
+5. **`expense_splits`**: The granular ledger. It permanently records the exact fractional debt owed by each participant for a specific expense. This table structure allows the system to seamlessly support both algorithmic Equal Splits and manual Custom Splits without altering the core schema.
