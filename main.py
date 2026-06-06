@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware # <-- Added Import
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import crud
 import models
@@ -7,7 +7,6 @@ import schemas
 from database import engine, get_db
 from collections import defaultdict
 from sqlalchemy import func
-
 
 # Initialize the FastAPI app
 app = FastAPI(
@@ -17,7 +16,7 @@ app = FastAPI(
 )
 
 # ==========================
-# CORS MIDDLEWARE (THE FIX)
+# CORS MIDDLEWARE
 # ==========================
 app.add_middleware(
     CORSMiddleware,
@@ -49,17 +48,26 @@ def create_group(group: schemas.GroupCreate, db: Session = Depends(get_db)):
     """Create a new group."""
     return crud.create_group(db=db, group=group)
 
+# UPGRADE: group_id is now a str
 @app.post("/groups/{group_id}/members", status_code=201)
-def add_member_to_group(group_id: int, request: schemas.AddMemberRequest, db: Session = Depends(get_db)):
+def add_member_to_group(group_id: str, request: schemas.AddMemberRequest, db: Session = Depends(get_db)):
     """Add a user to a specific group."""
     try:
+        # 1. Fetch the actual user and group objects from the database
+        group = crud.get_group(db, group_id)
+        user = crud.get_user_by_id(db, request.user_id)
+        
+        # 2. Add the member
         crud.add_user_to_group(db=db, group_id=group_id, user_id=request.user_id)
-        return {"message": f"User {request.user_id} successfully added to group {group_id}."}
+        
+        # 3. Return the human-readable names!
+        return {"message": f"User '{user.name}' successfully added to group '{group.name}'."}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# UPGRADE: group_id is now a str
 @app.get("/groups/{group_id}/members", response_model=list[schemas.UserResponse])
-def get_group_members(group_id: int, db: Session = Depends(get_db)):
+def get_group_members(group_id: str, db: Session = Depends(get_db)):
     """Return all ACTIVE members belonging to a group."""
     members = crud.get_active_group_members(db=db, group_id=group_id)
     return members
@@ -73,11 +81,11 @@ def add_expense(expense: schemas.ExpenseCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_expense(db=db, expense=expense)
     except ValueError as e:
-        # If any of our strict DB validations fail, return a 400 Bad Request
         raise HTTPException(status_code=400, detail=str(e))
 
+# UPGRADE: group_id is now a str
 @app.get("/groups/{group_id}/expenses", response_model=list[schemas.ExpenseResponse])
-def get_group_expenses(group_id: int, db: Session = Depends(get_db)):
+def get_group_expenses(group_id: str, db: Session = Depends(get_db)):
     """Return all expenses for a particular group."""
     return crud.get_group_expenses(db=db, group_id=group_id)
 
@@ -85,11 +93,9 @@ def get_group_expenses(group_id: int, db: Session = Depends(get_db)):
 # ==========================
 # BALANCE CALCULATION ENDPOINT 
 # ==========================
-# ==========================
-# BALANCE CALCULATION ENDPOINT 
-# ==========================
+# UPGRADE: group_id is now a str
 @app.get("/groups/{group_id}/balances")
-def get_group_balances(group_id: int, db: Session = Depends(get_db)):
+def get_group_balances(group_id: str, db: Session = Depends(get_db)):
     """
     Calculate consolidated balances for a specific group.
     Uses SQL Aggregation to prevent memory bottlenecks.
@@ -129,10 +135,8 @@ def get_group_balances(group_id: int, db: Session = Depends(get_db)):
         owes_dict = {}
         
         for creditor_id, net_amount in creditors.items():
-            # If the net amount is strictly > 0, they owe money
             if net_amount > 0:
                 creditor_name = users.get(creditor_id, f"User {creditor_id}")
-                # Convert our safe integer paise back to Rupees for the API
                 owes_dict[creditor_name] = net_amount / 100.0 
         
         if owes_dict:
@@ -143,11 +147,18 @@ def get_group_balances(group_id: int, db: Session = Depends(get_db)):
 # ==========================
 # DELETE USERS FROM GROUP
 # ==========================
+# UPGRADE: group_id and user_id are now str
 @app.delete("/groups/{group_id}/members/{user_id}", status_code=200)
-def remove_member_from_group(group_id: int, user_id: int, db: Session = Depends(get_db)):
-    
+def remove_member_from_group(group_id: str, user_id: str, db: Session = Depends(get_db)):
     try:
+        # 1. Fetch the actual user and group objects from the database
+        group = crud.get_group(db, group_id)
+        user = crud.get_user_by_id(db, user_id)
+
+        # 2. Remove the member
         crud.remove_user_from_group(db=db, group_id=group_id, user_id=user_id)
-        return {"message": f"User {user_id} successfully removed from group {group_id}."}
+        
+        # 3. Return the human-readable names!
+        return {"message": f"User '{user.name}' successfully removed from group '{group.name}'."}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
