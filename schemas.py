@@ -1,76 +1,48 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 from typing import List, Optional
 from datetime import datetime
-from pydantic import field_validator
 
-# ==========================
-# USER SCHEMAS
-# ==========================
+# --- USER SCHEMAS ---
 class UserCreate(BaseModel):
-    name: str = Field(..., min_length=1, description="Name of the user")
+    name: str = Field(..., min_length=1, examples=["Alice"])
 
-class UserResponse(BaseModel):
-    id: int
-    name: str
+class UserResponse(UserCreate):
+    id: int = Field(..., gt=0, examples=[1])
     created_at: datetime
 
-    # THE FIX: This replaces the old 'class Config:'
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
-
-# ==========================
-# GROUP SCHEMAS
-# ==========================
+# --- GROUP SCHEMAS ---
 class GroupCreate(BaseModel):
-    name: str = Field(..., min_length=1, description="Name of the group")
+    name: str = Field(..., min_length=1, examples=["Weekend Trip"])
 
-class GroupResponse(BaseModel):
-    id: int
-    name: str
+class GroupResponse(GroupCreate):
+    id: int = Field(..., gt=0, examples=[1])
     created_at: datetime
 
-    # THE FIX: This replaces the old 'class Config:'
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
-class AddMemberRequest(BaseModel):
-    user_id: int = Field(..., gt=0, description="ID of the user to add")
-
-
- 
-
-# ==========================
-# EXPENSE SCHEMAS
-# ==========================
-class SplitInput(BaseModel):
-    """Used for the bonus feature: Custom Unequal Splits"""
-    user_id: int
-    amount: float = Field(..., gt=0, description="Amount owed in Rupees") # Changed to float
+# --- EXPENSE SCHEMAS ---
+class ExpenseSplitCreate(BaseModel):
+    user_id: int = Field(..., gt=0, examples=[2])
+    amount: float = Field(..., gt=0, examples=[500.50])
 
 class ExpenseCreate(BaseModel):
-    group_id: int
-    paid_by: int
-    amount: float = Field(..., gt=0, description="Total expense amount in Rupees") # Changed to float
-    description: str = Field(..., min_length=1)
-    
-    splits: Optional[List[SplitInput]] = None 
+    group_id: int = Field(..., gt=0, examples=[1])
+    paid_by: int = Field(..., gt=0, examples=[1])
+    amount: float = Field(..., gt=0, examples=[1500.00])
+    description: str = Field(..., min_length=1, examples=["Dinner at Joey's"])
+    splits: Optional[List[ExpenseSplitCreate]] = None
 
 class ExpenseResponse(BaseModel):
-    id: int
-    group_id: int
-    paid_by: int
-    amount: float # Changed to float
-    description: str
+    id: int = Field(..., gt=0, examples=[100])
+    group_id: int = Field(..., gt=0, examples=[1])
+    paid_by: int = Field(..., gt=0, examples=[1])
+    amount: float = Field(..., gt=0, examples=[1500.00])
+    description: str = Field(..., examples=["Dinner at Joey's"])
     created_at: datetime
 
-    model_config = ConfigDict(from_attributes=True)
-
-    # THE MAGIC TRICK: When reading from the database, divide the integer by 100 to output Rupees
-    @field_validator('amount', mode='before')
-    def convert_to_rupees(cls, v):
-        return v / 100.0
-    
-# ==========================
-# BALANCE SCHEMAS
-# ==========================
-class OweDetail(BaseModel):
-    owes: dict[str, int]
+    class Config:
+        from_attributes = True
