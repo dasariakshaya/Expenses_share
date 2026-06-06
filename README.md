@@ -168,15 +168,16 @@ The backend validates:
 
 ```text
 .
-├── app/
-│   ├── main.py
-│   ├── models.py
-│   ├── schemas.py
-│   ├── database.py
-│   └── routers/
-├── index.html
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-└── README.md
+## 📁 Folder Structure
+
+Expenses_share/
+├── main.py              # FastAPI application instance and API route definitions
+├── models.py            # SQLAlchemy database models (Table schemas)
+├── schemas.py           # Pydantic models for request/response validation
+├── crud.py              # Core database logic and queries
+├── database.py          # Database connection, engine, and session management
+├── index.html           # Thin client testing dashboard (Vanilla JS/Bootstrap)
+├── Dockerfile           # Instructions to containerize the FastAPI app
+├── docker-compose.yml   # Orchestration for the API and PostgreSQL containers
+└── requirements.txt     # Python package dependencies
 ```
