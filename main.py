@@ -85,17 +85,19 @@ def get_group_expenses(group_id: int, db: Session = Depends(get_db)):
 # ==========================
 # BALANCE CALCULATION ENDPOINT 
 # ==========================
+# ==========================
+# BALANCE CALCULATION ENDPOINT 
+# ==========================
 @app.get("/groups/{group_id}/balances")
 def get_group_balances(group_id: int, db: Session = Depends(get_db)):
     """
     Calculate consolidated balances for a specific group.
     Uses SQL Aggregation to prevent memory bottlenecks.
     """
-    # 1. Verify group exists
-    group = crud.get_group(db, group_id)
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    # 1. Verify group exists (The CRUD layer will automatically throw a 404 if it doesn't!)
+    crud.get_group(db, group_id)
 
+    # 2. SQL Aggregation
     aggregated_debts = db.query(
         models.ExpenseSplit.user_id.label("debtor_id"),
         models.Expense.paid_by.label("creditor_id"),
