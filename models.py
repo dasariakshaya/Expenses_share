@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import declarative_base, relationship
@@ -8,8 +9,8 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    # UPGRADE: Unique constraint prevents duplicate identical accounts
+    # UPGRADE: Primary Key is now a String that auto-generates a UUID
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
     name = Column(String, unique=True, nullable=False) 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -21,7 +22,7 @@ class User(Base):
 class Group(Base):
     __tablename__ = "groups"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
     name = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -32,12 +33,11 @@ class Group(Base):
 class GroupMember(Base):
     __tablename__ = "group_members"
 
-    # UPGRADE: Added a primary key ID so a user can join, leave, and rejoin later
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    group_id = Column(Integer, ForeignKey("groups.id", ondelete="CASCADE"), nullable=False)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    # UPGRADE: Foreign Keys must now be Strings to match the UUIDs
+    user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    group_id = Column(String, ForeignKey("groups.id", ondelete="CASCADE"), nullable=False)
     
-    # UPGRADE: Soft Delete functionality
     is_active = Column(Boolean, default=True, nullable=False)
     joined_at = Column(DateTime(timezone=True), server_default=func.now())
     left_at = Column(DateTime(timezone=True), nullable=True)
@@ -46,10 +46,11 @@ class GroupMember(Base):
 class Expense(Base):
     __tablename__ = "expenses"
 
-    id = Column(Integer, primary_key=True, index=True)
-    group_id = Column(Integer, ForeignKey("groups.id", ondelete="CASCADE"), nullable=False)
-    paid_by = Column(Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    group_id = Column(String, ForeignKey("groups.id", ondelete="CASCADE"), nullable=False)
+    paid_by = Column(String, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
     
+    # Amount stays Integer because it holds our mathematical Paise logic!
     amount = Column(Integer, nullable=False) 
     description = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
@@ -62,9 +63,9 @@ class Expense(Base):
 class ExpenseSplit(Base):
     __tablename__ = "expense_splits"
 
-    id = Column(Integer, primary_key=True, index=True)
-    expense_id = Column(Integer, ForeignKey("expenses.id", ondelete="CASCADE"), nullable=False)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
+    id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    expense_id = Column(String, ForeignKey("expenses.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String, ForeignKey("users.id", ondelete="RESTRICT"), nullable=False)
     
     amount_owed = Column(Integer, nullable=False)
 
