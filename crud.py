@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException  # THE FIX: Added this crucial import
+from fastapi import HTTPException
 from datetime import datetime
 import models
 import schemas
@@ -8,13 +8,13 @@ import schemas
 # ==========================================
 # 🛑 404 ERROR HELPERS (The Gatekeepers)
 # ==========================================
-def get_group_or_404(db: Session, group_id: int):
+def get_group_or_404(db: Session, group_id: str): # Changed to str
     group = db.query(models.Group).filter(models.Group.id == group_id).first()
     if not group:
         raise HTTPException(status_code=404, detail=f"Error: Group with ID {group_id} does not exist.")
     return group
 
-def get_user_or_404(db: Session, user_id: int):
+def get_user_or_404(db: Session, user_id: str): # Changed to str
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail=f"Error: User with ID {user_id} does not exist.")
@@ -41,8 +41,7 @@ def create_user(db: Session, user: schemas.UserCreate):
 def get_users(db: Session):
     return db.query(models.User).all()
     
-def get_user_by_id(db: Session, user_id: int):
-    # UPDATED: Immediately check if user exists
+def get_user_by_id(db: Session, user_id: str): # Changed to str
     return get_user_or_404(db, user_id)
 
 
@@ -63,20 +62,17 @@ def create_group(db: Session, group: schemas.GroupCreate):
     db.refresh(db_group)
     return db_group
 
-def get_group(db: Session, group_id: int):
-    # UPDATED: Immediately check if group exists
+def get_group(db: Session, group_id: str): # Changed to str
     return get_group_or_404(db, group_id)
 
 
 # ==========================
-# GROUP MEMBER CRUD (Upgraded for Soft Deletes)
+# GROUP MEMBER CRUD
 # ==========================
-def add_user_to_group(db: Session, group_id: int, user_id: int):
-    # UPDATED: Ensure group and user actually exist before adding
+def add_user_to_group(db: Session, group_id: str, user_id: str): # Changed to str
     get_group_or_404(db, group_id)
     get_user_or_404(db, user_id)
 
-    # Check if a membership record already exists (even if inactive)
     db_member = db.query(models.GroupMember).filter(
         models.GroupMember.group_id == group_id,
         models.GroupMember.user_id == user_id
@@ -85,19 +81,16 @@ def add_user_to_group(db: Session, group_id: int, user_id: int):
     if db_member:
         if db_member.is_active:
             raise ValueError("User is already an active member of this group.")
-        # Reactivate a returning user
         db_member.is_active = True
         db_member.left_at = None
     else:
-        # Create a completely new membership
         db_member = models.GroupMember(group_id=group_id, user_id=user_id)
         db.add(db_member)
     
     db.commit()
     return db_member
 
-def remove_user_from_group(db: Session, group_id: int, user_id: int):
-    # UPDATED: Check for 404s before trying to delete
+def remove_user_from_group(db: Session, group_id: str, user_id: str): # Changed to str
     get_group_or_404(db, group_id)
     get_user_or_404(db, user_id)
 
@@ -115,8 +108,7 @@ def remove_user_from_group(db: Session, group_id: int, user_id: int):
     db.commit()
     return True
 
-def get_active_group_members(db: Session, group_id: int):
-    # UPDATED: Block invalid groups instantly
+def get_active_group_members(db: Session, group_id: str): # Changed to str
     get_group_or_404(db, group_id)
     
     return db.query(models.User).join(models.GroupMember).filter(
@@ -126,13 +118,11 @@ def get_active_group_members(db: Session, group_id: int):
 
 
 # ==========================
-# EXPENSE CRUD (Upgraded with Transaction Safety)
+# EXPENSE CRUD
 # ==========================
 def create_expense(db: Session, expense: schemas.ExpenseCreate):
-    # UPDATED: Ensure the group exists before running heavy math
     get_group_or_404(db, expense.group_id)
 
-    # 1. Fetch only ACTIVE group members
     active_users = get_active_group_members(db, expense.group_id)
     active_user_ids = [u.id for u in active_users]
     
@@ -144,7 +134,6 @@ def create_expense(db: Session, expense: schemas.ExpenseCreate):
 
     total_paise = int(round(expense.amount * 100))
 
-    # --- TRANSACTION START ---
     try:
         db_expense = models.Expense(
             group_id=expense.group_id,
@@ -156,7 +145,6 @@ def create_expense(db: Session, expense: schemas.ExpenseCreate):
         db.flush() 
 
         if expense.splits:
-            # Check for duplicate user_ids in the custom split payload
             split_user_ids = [split.user_id for split in expense.splits]
             if len(split_user_ids) != len(set(split_user_ids)):
                 raise ValueError("Duplicate users found in the custom split.")
@@ -198,18 +186,14 @@ def create_expense(db: Session, expense: schemas.ExpenseCreate):
                 )
                 db.add(db_split)
 
-        # If everything above succeeds, lock it into the database permanently
         db.commit()
         db.refresh(db_expense)
         return db_expense
         
     except Exception as e:
-        # If ANYTHING fails, wipe the slate clean so we don't store half-written data
         db.rollback()
         raise e
-    # --- TRANSACTION END ---
 
-def get_group_expenses(db: Session, group_id: int):
-    # UPDATED: Block invalid groups instantly
+def get_group_expenses(db: Session, group_id: str): # Changed to str
     get_group_or_404(db, group_id)
     return db.query(models.Expense).filter(models.Expense.group_id == group_id).all()
