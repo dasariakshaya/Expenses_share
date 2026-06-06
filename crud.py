@@ -8,19 +8,22 @@ import schemas
 # USER CRUD
 # ==========================
 def create_user(db: Session, user: schemas.UserCreate):
-    try:
-        db_user = models.User(name=user.name)
-        db.add(db_user)
-        db.commit()
-        db.refresh(db_user)
-        return db_user
-    except IntegrityError:
-        db.rollback()
-        raise ValueError(f"User with name '{user.name}' already exists.")
-
+    existing_user = db.query(models.User).filter(models.User.name == user.name).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"User '{user.name}' already exists."
+        )
+        
+    db_user = models.User(name=user.name)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+    
 def get_users(db: Session):
     return db.query(models.User).all()
-
+    
 def get_user_by_id(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
@@ -29,6 +32,13 @@ def get_user_by_id(db: Session, user_id: int):
 # GROUP CRUD
 # ==========================
 def create_group(db: Session, group: schemas.GroupCreate):
+    existing_group = db.query(models.Group).filter(models.Group.name == group.name).first()
+    if existing_group:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"A group named '{group.name}' already exists. Please choose a different name."
+        )
+        
     db_group = models.Group(name=group.name)
     db.add(db_group)
     db.commit()
@@ -73,14 +83,14 @@ def remove_user_from_group(db: Session, group_id: int, user_id: int):
     if not db_member:
         raise ValueError("User is not currently in this group.")
         
-    # SOFT DELETE: We flip the flag and stamp the time, but leave the row intact
+    
     db_member.is_active = False
     db_member.left_at = datetime.utcnow()
     db.commit()
     return True
 
 def get_active_group_members(db: Session, group_id: int):
-    # Only return users where their mapping row says is_active == True
+    
     return db.query(models.User).join(models.GroupMember).filter(
         models.GroupMember.group_id == group_id,
         models.GroupMember.is_active == True
